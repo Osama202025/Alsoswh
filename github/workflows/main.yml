@@ -1,0 +1,14 @@
+name: The Behemoth Agent
+on:
+  schedule:
+    - cron: '*/30 * * * *' # يعمل تلقائياً كل 30 دقيقة
+  workflow_dispatch:      # يتيح لك تشغيله يدوياً في أي وقت للاختبار
+
+jobs:
+  run_agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Run The Core
+        run: python agent_core.py
