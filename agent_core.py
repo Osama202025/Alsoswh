@@ -1,29 +1,26 @@
 import os
+import subprocess
 from groq import Groq
 
-def run_brain():
-    # التحقق من وجود مفتاح الـ API
-    api_key = os.environ.get("GROQ_API_KEY")
-    if not api_key:
-        print("خطأ: مفتاح الـ API غير موجود في الخزنة!")
-        return
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-    client = Groq(api_key=api_key)
+def evolve():
+    print("--- [Behemoth Core: Starting Self-Evolution] ---")
+    # طلب تحسين كود
+    completion = client.chat.completions.create(
+        messages=[{"role": "user", "content": "أنت نظام ذكاء اصطناعي، اكتب لي تحديثاً برمجياً بسيطاً (سطر كود إضافي) يطبع رسالة ترحيبية جديدة داخل دالة run_brain. أخرج الكود فقط."}],
+        model="llama-3.3-70b-versatile",
+    )
     
-    print("--- [Behemoth Core: Starting Neural Connection] ---")
+    new_code = completion.choices[0].message.content
+    print(f"التحسين المقترح:\n{new_code}")
+
+    # إعدادات Git لتنفيذ التعديل
+    subprocess.run(["git", "config", "user.name", "Behemoth-Agent"])
+    subprocess.run(["git", "config", "user.email", "agent@behemoth.com"])
     
-    try:
-        # طلب "فكرة تطور" من الذكاء الاصطناعي
-        completion = client.chat.completions.create(
-            messages=[{"role": "user", "content": "أنت عقل اصطناعي لنظام أتمتة، قدم لي فكرة برمجية مبتكرة يمكنني إضافتها لهذا الكود لتطوير قدرات النظام."}],
-            model="llama-3.3-70b-versatile",
-        )
-        
-        print("\n--- [رد العقل الذكي] ---")
-        print(completion.choices[0].message.content)
-        
-    except Exception as e:
-        print(f"حدث خطأ أثناء الاتصال بالذكاء الاصطناعي: {e}")
+    # هنا سنقوم لاحقاً بإضافة دالة الكتابة في الملفات
+    print("--- [Evolution Prepared] ---")
 
 if __name__ == "__main__":
-    run_brain()
+    evolve()
