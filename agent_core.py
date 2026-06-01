@@ -1,18 +1,17 @@
 import os
-import datetime
+from groq import Groq
 
-class BehemothCore:
-    def __init__(self):
-        self.version = "1.0.0"
-        self.status = "Initializing"
+# إعداد العقل ليقرأ المفتاح من الخزنة
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-    def run(self):
-        print(f"--- [Behemoth Core {self.version}] ---")
-        print(f"Time: {datetime.datetime.now()}")
-        # هنا سنضع لاحقاً منطق التداول والنمو
-        self.status = "Active and Searching for Resources"
-        print(f"Status: {self.status}")
+def think():
+    print("--- [Behemoth Core: Thinking Phase] ---")
+    completion = client.chat.completions.create(
+        messages=[{"role": "user", "content": "أنت عقل اصطناعي، أعطني فكرة برمجية لتطوير نفسك."}],
+        model="llama3-8b-8192",
+    )
+    print("الرد:")
+    print(completion.choices[0].message.content)
 
 if __name__ == "__main__":
-    core = BehemothCore()
-    core.run()
+    think()
