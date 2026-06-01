@@ -1,12 +1,18 @@
 import os
+import datetime
 
-# هذا الكود هو مجرد النواة الأولى
-# سيتطور هذا الكود تلقائياً عبر الذكاء الاصطناعي لاحقاً
-def initialize_system():
-    print("نظام الإمبراطورية قيد التشغيل...")
-    # هنا سيتم لاحقاً وضع كود الاتصال بالأسواق والذكاء الاصطناعي
-    return "System Online"
+class BehemothCore:
+    def __init__(self):
+        self.version = "1.0.0"
+        self.status = "Initializing"
+
+    def run(self):
+        print(f"--- [Behemoth Core {self.version}] ---")
+        print(f"Time: {datetime.datetime.now()}")
+        # هنا سنضع لاحقاً منطق التداول والنمو
+        self.status = "Active and Searching for Resources"
+        print(f"Status: {self.status}")
 
 if __name__ == "__main__":
-    status = initialize_system()
-    print(f"الحالة: {status}")
+    core = BehemothCore()
+    core.run()
