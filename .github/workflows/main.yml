@@ -1,12 +1,18 @@
 name: The Behemoth Agent
 on:
   schedule:
-    - cron: '*/30 * * * *' # يعمل كل 30 دقيقة
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
 jobs:
   run_agent:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Run The Core
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Execute Behemoth Core
         run: python agent_core.py
