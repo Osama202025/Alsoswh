@@ -1,7 +1,7 @@
 name: The Behemoth Agent
 on:
-  schedule:
-    - cron: '*/30 * * * *'
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,9 +10,5 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Execute Behemoth Core
+      - name: Run The Core
         run: python agent_core.py
