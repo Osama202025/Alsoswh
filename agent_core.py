@@ -1,22 +1,18 @@
+import datetime
+from groq import Groq
+import os
 
-import random
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-# رسائل ترحيب عشوائية
-messages = [
-    "مرحبا، يسعدني مساعدتك!",
-    "أهلاً بك، هل يمكنني مساعدتك في أمر ما؟",
-    "مرحباً بك، كيف يمكنني مساعدتك اليوم؟",
-    "أهلاً بك، يسعدني أن أتحدث معك!",
-    "مرحباً، كيف يمكنني خدمتك؟"
-]
-
-def print_welcome_message():
-    # طباعة رسالة ترحيب عشوائية
-    print(random.choice(messages))
-
-def main():
-    print_welcome_message()
-    # باقي الكود هنا...
+def think():
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"--- [Behemoth Core: Thinking at {now}] ---")
+    
+    completion = client.chat.completions.create(
+        messages=[{"role": "user", "content": "أعطني حكمة قصيرة جداً عن التطور."}],
+        model="llama-3.3-70b-versatile",
+    )
+    print(f"الرد: {completion.choices[0].message.content}")
 
 if __name__ == "__main__":
-    main()
+    think()
