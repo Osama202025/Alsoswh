@@ -284,3 +284,49 @@ print("العنقودات:", عنقودات)
 print("مراكز العنقودات:", مراكز)
 ```
 دالة تحليل البيانات باستخدام التحليل العنقودي (K-Means Clustering) تساعد على تحليل البيانات عن طريق تقسيمها إلى عنقودات بناءً على مماثلاتها. يمكن استخدام هذه الدالة في تحليل البيانات في مختلف المجالات، مثل العلوم والتقنية والاقتصاد.
+
+--- [Full Evolution Cycle: 2026-06-02 16:22:58] ---
+دالة التحليل الإحصائي المتقدم:
+يمكن إضافة دالة新ة إلى نظامك لزيادة قدرته على تحليل البيانات، وهي دالة تُدعى `advance_statistics_analysis`. هذه الدالة ستقوم بتحليل البيانات الإحصائية المتقدمة، مثل التحليل الاتصالي والمتنوع، وتقدم نتائج أكثر دقة حول البيانات.
+
+مثال على تنفيذ هذه الدالة:
+
+```python
+import pandas as pd
+from scipy.stats import norm
+from scipy import stats
+
+def advance_statistics_analysis(data):
+    # تحليل التباين
+    variance = data.var()
+    
+    # تحليل الانحراف المعياري
+    std_deviation = data.std()
+    
+    # تحليل معامل الارتباط
+    correlation_coefficient = data.corr()
+    
+    # تحليل التوزیع
+    distribution = stats.norm.rvs(loc=data.mean(), scale=std_deviation, size=len(data))
+    
+    # التقرير النهائي
+    report = {
+        'variance': variance,
+        'std_deviation': std_deviation,
+        'correlation_coefficient': correlation_coefficient,
+        'distribution': distribution,
+    }
+    
+    return report
+
+# مثال على استخدام الدالة
+data = pd.DataFrame({
+    'column1': [1, 2, 3, 4, 5],
+    'column2': [6, 7, 8, 9, 10]
+})
+
+result = advance_statistics_analysis(data)
+print(result)
+```
+
+إضافة هذه الدالة إلى نظامك سيسمح لك بتحليل البيانات الإحصائية المتقدمة بشكل أسهل وأكثر دقة.
