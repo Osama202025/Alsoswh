@@ -1,4 +1,4 @@
-name: Behemoth-Nexus-Prime
+name: Behemoth-Supreme-Evolution
 on:
   push:
   workflow_dispatch:
@@ -6,18 +6,34 @@ on:
 jobs:
   evolution:
     runs-on: ubuntu-latest
-    permissions: contents: write
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
-      - name: Unleash The Nexus
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install groq
+
+      - name: Execute Behemoth Kernel
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python kernel.py
+
+      - name: Commit and Push Evolution
         run: |
-          python3 kernel.py
-      - name: Stabilize and Deploy
-        run: |
-          git config --global user.name "Behemoth-Prime"
+          git config --global user.name "Behemoth-Supreme"
           git config --global user.email "nexus@behemoth.empire"
-          git add BEHEMOTH_NEXUS/
-          git commit -m "Nexus Prime: Total System Expansion" || echo "Stable"
-          git push
+          git add .
+          if ! git diff-index --quiet HEAD --; then
+            git commit -m "Auto-Evolved: System expanding"
+            git pull origin main --rebase --autostash
+            git push origin main
+          fi
