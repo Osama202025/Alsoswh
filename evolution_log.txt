@@ -1036,3 +1036,44 @@ score_std = analyze_data(df, 'Score', 'std')
 print("الانحراف المعياري:", score_std)
 ```
 هذه الدالة تسمح لك بتحليل البيانات بشكل متقدم، حيث يمكنك اختيار نوع التحليل المراد إجراؤه (مثل المتوسط، الوسط، الوضع، الانحراف المعياري، التباين) واسم العمود المراد تحليله. يمكنك استخدام هذه الدالة لتحليل البيانات وإيجاد نتائج متقدمة.
+
+--- [Full Evolution Cycle: 2026-06-04 19:14:19] ---
+دالة تحليل التمييز بين المتغيرات: 
+يمكن إضافة دالة تحليلية جديدة تسمى `analyze_variables_correlation` والتي تقوم بتحليل التمييز بين المتغيرات في قاعدة البيانات.
+
+هذه الدالة يمكنها استقبال قاعدة بيانات كمدخل وتقوم بحساب معامل الارتباط بين كل زوج من المتغيرات Numeric. يمكن استخدام هذه الدالة لفهم العلاقات بين المتغيرات المختلفة في قاعدة البيانات.
+
+```python
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+def analyze_variables_correlation(df):
+    # يتم تحديد المتغيرات العددية
+    numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
+    
+    # يتم حساب معامل الارتباط بين المتغيرات
+    correlation_matrix = df[numeric_columns].corr()
+    
+    # يتم إنشاء مخطط الحرارة
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', square=True)
+    plt.title('مخطط الحرارة لمعامل الارتباط')
+    plt.show()
+
+    # يتم إرجاع معامل الارتباط
+    return correlation_matrix
+
+# مثال على استخدام الدالة
+df = pd.DataFrame({
+    'A': [1, 2, 3, 4, 5],
+    'B': [2, 3, 5, 7, 11],
+    'C': [3, 5, 7, 11, 13]
+})
+
+correlation_matrix = analyze_variables_correlation(df)
+print(correlation_matrix)
+```
+
+بهذه الدالة، يمكنك بسهولة تحليل التمييز بين المتغيرات في قاعدة البيانات ومراقبة العلاقات بينها.
