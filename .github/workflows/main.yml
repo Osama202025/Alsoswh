@@ -1,24 +1,35 @@
-name: Behemoth Auto-Evolve
+name: Behemoth-Empire-Core
 on:
   schedule:
-    - cron: '0 * * * *'  # سيعمل النظام تلقائياً في بداية كل ساعة
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    - cron: '0 * * * *' # يعمل كل ساعة
+  workflow_dispatch:    # يسمح لك بالتشغيل اليدوي في أي وقت
 
 jobs:
-  run_evolution:
+  evolution:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # ضروري جداً للسماح للنظام بتعديل ملفات المستودع
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - run: pip install groq
-      - name: Evolve System
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install groq
+
+      - name: Execute Behemoth Kernel
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: python agent_core.py
+        run: python kernel.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "Behemoth-Empire-Bot"
+          git config --global user.email "bot@behemoth.empire"
+          git add .
+          git commit -m "Empire Evolution: Self-Optimized Logic and Logs" || echo "No changes to commit"
+          git push
