@@ -1,11 +1,11 @@
 import os
 import google.generativeai as genai
 from groq import Groq
-from openai import OpenAI # DeepSeek متوافق مع OpenAI API
+from openai import OpenAI
 
 class BehemothNexusPrime:
     def __init__(self):
-        # تفعيل الثلاثي الخارق
+        # تفعيل الثلاثي الخارق باستخدام متغيرات البيئة من GitHub Secrets
         self.groq = Groq(api_key=os.environ.get("GROQ_API_KEY"))
         genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
         self.gemini = genai.GenerativeModel('gemini-1.5-flash')
@@ -15,26 +15,21 @@ class BehemothNexusPrime:
         if not os.path.exists(self.nexus_dir): os.makedirs(self.nexus_dir)
 
     def orchestrate(self, task):
-        """المنسق الأعلى: يختار العقل الأنسب للمهمة"""
         print(f"Orchestrating task: {task}")
         
         # اختيار الذكاء بناءً على طبيعة المهمة
         if "بناء" in task or "نظام" in task:
-            # استخدام Gemini للمشاريع الضخمة
             response = self.gemini.generate_content(task).text
         elif "تصحيح" in task or "ذكاء" in task:
-            # استخدام DeepSeek للمهام المعقدة
             res = self.deepseek.chat.completions.create(model="deepseek-chat", messages=[{"role": "user", "content": task}])
             response = res.choices[0].message.content
         else:
-            # استخدام Groq للسرعة
             res = self.groq.chat.completions.create(messages=[{"role": "user", "content": task}], model="llama-3.3-70b-versatile")
             response = res.choices[0].message.content
             
         self.deploy(response)
 
     def deploy(self, content):
-        # محرك البناء الذاتي
         lines = content.splitlines()
         current_file = None
         for line in lines:
@@ -46,8 +41,9 @@ class BehemothNexusPrime:
 
 if __name__ == "__main__":
     if os.path.exists("commands.txt"):
-        cmd = open("commands.txt", "r").read().strip()
+        with open("commands.txt", "r") as f:
+            cmd = f.read().strip()
         if cmd:
             nexus = BehemothNexusPrime()
             nexus.orchestrate(cmd)
-            open("commands.txt", "w").write("")
+            with open("commands.txt", "w") as f: f.write("")
