@@ -1,39 +1,53 @@
 import os
-import datetime
-import subprocess
+import google.generativeai as genai
 from groq import Groq
+from openai import OpenAI # DeepSeek متوافق مع OpenAI API
 
-class BehemothNexus:
+class BehemothNexusPrime:
     def __init__(self):
-        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        # تفعيل الثلاثي الخارق
+        self.groq = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+        self.gemini = genai.GenerativeModel('gemini-1.5-flash')
+        self.deepseek = OpenAI(api_key=os.environ.get("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
+        
         self.nexus_dir = "BEHEMOTH_NEXUS"
         if not os.path.exists(self.nexus_dir): os.makedirs(self.nexus_dir)
 
-    def manifest_existence(self):
-        """خلق الكيان من العدم"""
-        cmd = "قم بتوليد نظام تشغيل ذكاء اصطناعي متكامل: نواة للتحليل، ذاكرة دائمة، ومحرك للتطوير الذاتي. وزع الكود على ملفات برمجية متعددة ومترابطة."
+    def orchestrate(self, task):
+        """المنسق الأعلى: يختار العقل الأنسب للمهمة"""
+        print(f"Orchestrating task: {task}")
         
-        # استدعاء العقل العميق
-        response = self.client.chat.completions.create(
-            messages=[{"role": "user", "content": cmd}],
-            model="llama-3.3-70b-versatile",
-            max_tokens=30000 # طاقة قصوى لتوليد آلاف الأسطر
-        )
-        
-        self.construct(response.choices[0].message.content)
+        # اختيار الذكاء بناءً على طبيعة المهمة
+        if "بناء" in task or "نظام" in task:
+            # استخدام Gemini للمشاريع الضخمة
+            response = self.gemini.generate_content(task).text
+        elif "تصحيح" in task or "ذكاء" in task:
+            # استخدام DeepSeek للمهام المعقدة
+            res = self.deepseek.chat.completions.create(model="deepseek-chat", messages=[{"role": "user", "content": task}])
+            response = res.choices[0].message.content
+        else:
+            # استخدام Groq للسرعة
+            res = self.groq.chat.completions.create(messages=[{"role": "user", "content": task}], model="llama-3.3-70b-versatile")
+            response = res.choices[0].message.content
+            
+        self.deploy(response)
 
-    def construct(self, code_payload):
-        # محرك التفكيك والبناء: يحول النصوص إلى هيكل برمجيات
-        lines = code_payload.splitlines()
-        active_file = None
+    def deploy(self, content):
+        # محرك البناء الذاتي
+        lines = content.splitlines()
+        current_file = None
         for line in lines:
-            if line.startswith("### FILE:"):
+            if "### FILE:" in line:
                 filename = line.replace("### FILE:", "").strip()
-                active_file = os.path.join(self.nexus_dir, filename)
-            elif active_file:
-                with open(active_file, "a") as f:
-                    f.write(line + "\n")
+                current_file = os.path.join(self.nexus_dir, filename)
+            elif current_file:
+                with open(current_file, "a") as f: f.write(line + "\n")
 
 if __name__ == "__main__":
-    nexus = BehemothNexus()
-    nexus.manifest_existence()
+    if os.path.exists("commands.txt"):
+        cmd = open("commands.txt", "r").read().strip()
+        if cmd:
+            nexus = BehemothNexusPrime()
+            nexus.orchestrate(cmd)
+            open("commands.txt", "w").write("")
