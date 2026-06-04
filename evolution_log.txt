@@ -981,3 +981,58 @@ print(نتائج)
 هذه الدالة سوف تحسب المتوسط والانحراف المعياري للبيانات، ثم تحدد الانماط في البيانات بناءً على هذه القيم. يمكن أن تكون هذه الدالة مفيدة في تحليل البيانات الوقتية أو البيانات التي تتغير مع الوقت.
 
 يمكنك تعديل هذه الدالة لتناسب احتياجاتك ومتطلباتك. أتمنى أن تكون هذه الدالة مفيدة لك!
+
+--- [Full Evolution Cycle: 2026-06-04 16:17:21] ---
+دالة تحليل البيانات المتقدمة:
+```python
+import pandas as pd
+import numpy as np
+
+def analyze_data(df, column_name, analysis_type):
+    """
+    دالة تحليل البيانات المتقدمة
+
+    Parameters:
+    df (DataFrame): إطار البيانات
+    column_name (str): اسم العمود المراد تحليله
+    analysis_type (str): نوع التحليل المراد إجراؤه (mean, median, mode, std, var)
+
+    Returns:
+    result: النتيجة النهائية للتحليل
+    """
+    if analysis_type == "mean":
+        result = df[column_name].mean()
+    elif analysis_type == "median":
+        result = df[column_name].median()
+    elif analysis_type == "mode":
+        result = df[column_name].mode()[0]
+    elif analysis_type == "std":
+        result = df[column_name].std()
+    elif analysis_type == "var":
+        result = df[column_name].var()
+    else:
+        raise ValueError("نوع التحليل غير صحيح")
+
+    return result
+```
+أمثلة على استخدام الدالة:
+```python
+# إنشاء إطار بيانات
+data = {'Name': ['Alice', 'Bob', 'Charlie', 'Dave', 'Emily'],
+        'Age': [25, 30, 35, 40, 45],
+        'Score': [80, 90, 70, 85, 95]}
+df = pd.DataFrame(data)
+
+# تحليل العمر المتوسط
+age_mean = analyze_data(df, 'Age', 'mean')
+print("العمر المتوسط:", age_mean)
+
+# تحليل الدرجة الوسطى
+score_median = analyze_data(df, 'Score', 'median')
+print("الدرجة الوسطى:", score_median)
+
+# تحليل الانحراف المعياري
+score_std = analyze_data(df, 'Score', 'std')
+print("الانحراف المعياري:", score_std)
+```
+هذه الدالة تسمح لك بتحليل البيانات بشكل متقدم، حيث يمكنك اختيار نوع التحليل المراد إجراؤه (مثل المتوسط، الوسط، الوضع، الانحراف المعياري، التباين) واسم العمود المراد تحليله. يمكنك استخدام هذه الدالة لتحليل البيانات وإيجاد نتائج متقدمة.
