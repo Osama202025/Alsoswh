@@ -10,29 +10,24 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Setup Python
+      - name: Setup Python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-          
-      - name: Install Dependencies
+          python-version: '3.12'
+      - name: Install Latest SDKs
         run: |
           pip install --upgrade pip
-          pip install groq google-generativeai openai
-          
+          pip install google-genai groq openai
       - name: Execute Nexus
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: python kernel.py
-        
-      - name: Commit and Push
+      - name: Commit Results
         run: |
           git config --global user.name "Behemoth-Prime"
           git config --global user.email "nexus@behemoth.empire"
           git add .
-          git commit -m "Nexus Evolution: System update" || echo "No changes"
-          git pull origin main --rebase --autostash
-          git push origin main
+          git commit -m "Nexus Evolution: Latest SDKs Applied" || echo "Stable"
+          git push
