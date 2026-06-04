@@ -15,31 +15,32 @@ class BehemothEmpire:
             f.write(f"[{timestamp}] {message}\n")
 
     def run(self):
-        # قراءة الأمر من الملف
+        # 1. قراءة الأمر
         if not os.path.exists(self.cmd_file): return
         with open(self.cmd_file, "r") as f:
             cmd = f.read().strip()
         
         if not cmd: return
 
-        # تنفيذ المهمة
+        # 2. تنفيذ المهمة
         self.log(f"--- [MISSION START]: {cmd} ---")
-        prompt = f"أنت الكيان الذكي Behemoth. نفذ المهمة التالية بكود بايثون متكامل: {cmd}. ضع الكود في ملف داخل مجلد agents/."
+        prompt = f"أنت الكيان الذكي Behemoth. نفذ المهمة التالية بكود بايثون متكامل وقوي: {cmd}. ضع الكود في ملف داخل مجلد agents/."
         
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="llama-3.3-70b-versatile",
         )
         
-        # حفظ النتيجة
-        with open(f"agents/task_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.py", "w") as f:
+        # 3. حفظ النتيجة (توليد وكيل جديد)
+        file_name = f"agents/agent_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.py"
+        with open(file_name, "w") as f:
             f.write(response.choices[0].message.content)
             
-        # تفريغ أمر المهمة
+        # 4. تفريغ أمر المهمة (تطهير العقل)
         with open(self.cmd_file, "w") as f:
             f.write("")
         
-        self.log("تمت المهمة بنجاح وتوليد وكيل (Agent) جديد.")
+        self.log(f"تمت المهمة بنجاح، تم توليد الوكيل: {file_name}")
 
 if __name__ == "__main__":
     behemoth = BehemothEmpire()
