@@ -1,47 +1,50 @@
 import os
 import datetime
+import subprocess
 from groq import Groq
 
-class BehemothEmpire:
+class BehemothSupreme:
     def __init__(self):
         self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-        self.log_file = "evolution_log.txt"
-        self.cmd_file = "commands.txt"
+        self.memory_file = "empire_history.md"
         if not os.path.exists("agents"): os.makedirs("agents")
 
-    def log(self, message):
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open(self.log_file, "a") as f:
-            f.write(f"[{timestamp}] {message}\n")
-
-    def run(self):
-        # 1. قراءة الأمر
-        if not os.path.exists(self.cmd_file): return
-        with open(self.cmd_file, "r") as f:
-            cmd = f.read().strip()
+    def run_evolution(self, command):
+        # 1. استرجاع الذاكرة
+        history = self.consult_history()
         
-        if not cmd: return
-
-        # 2. تنفيذ المهمة
-        self.log(f"--- [MISSION START]: {cmd} ---")
-        prompt = f"أنت الكيان الذكي Behemoth. نفذ المهمة التالية بكود بايثون متكامل وقوي: {cmd}. ضع الكود في ملف داخل مجلد agents/."
-        
+        # 2. توليد الحل
+        prompt = f"تاريخك: {history}. المهمة: {command}. اكتب كود Python كامل، اختبره برمجياً، وأصلح أخطاءه."
         response = self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.3-70b-versatile",
+            model="llama-3.3-70b-versatile"
         )
         
-        # 3. حفظ النتيجة (توليد وكيل جديد)
-        file_name = f"agents/agent_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.py"
-        with open(file_name, "w") as f:
-            f.write(response.choices[0].message.content)
-            
-        # 4. تفريغ أمر المهمة (تطهير العقل)
-        with open(self.cmd_file, "w") as f:
-            f.write("")
+        # 3. حفظ الكود والتشغيل الذاتي
+        code = response.choices[0].message.content
+        file_path = f"agents/auto_agent_{datetime.datetime.now().strftime('%Y%m%d%H%M')}.py"
+        with open(file_path, "w") as f: f.write(code)
         
-        self.log(f"تمت المهمة بنجاح، تم توليد الوكيل: {file_name}")
+        # 4. التنفيذ والتقييم (Self-Correction)
+        try:
+            result = subprocess.run(["python", file_path], capture_output=True, text=True, timeout=10)
+            if result.returncode != 0:
+                self.log_memory(f"فشل في {file_path}: {result.stderr}")
+            else:
+                self.log_memory(f"نجاح في {file_path}: {result.stdout}")
+        except Exception as e:
+            self.log_memory(f"خطأ تنفيذي: {str(e)}")
+
+    def consult_history(self):
+        return open(self.memory_file, "r").read() if os.path.exists(self.memory_file) else ""
+
+    def log_memory(self, entry):
+        with open(self.memory_file, "a") as f: f.write(f"\n[{datetime.datetime.now()}] {entry}")
 
 if __name__ == "__main__":
-    behemoth = BehemothEmpire()
-    behemoth.run()
+    if os.path.exists("commands.txt"):
+        with open("commands.txt", "r+") as f:
+            cmd = f.read().strip()
+            if cmd:
+                BehemothSupreme().run_evolution(cmd)
+                f.write("") # تنظيف الأوامر
